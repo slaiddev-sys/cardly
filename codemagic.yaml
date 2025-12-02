@@ -1,0 +1,55 @@
+workflows:
+  ios-workflow:
+    name: iOS Workflow
+    max_build_duration: 120
+    instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: codemagic
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.love.cardly.app
+      vars:
+        XCODE_WORKSPACE: "App.xcworkspace"
+        XCODE_SCHEME: "App"
+      node: 18
+      xcode: 15.0
+      cocoapods: default
+    scripts:
+      - name: Install dependencies
+        script: |
+          cd client
+          npm install
+      - name: Build web app
+        script: |
+          cd client
+          npm run build
+      - name: Update dependencies and build iOS
+        script: |
+          cd client
+          npx cap sync ios
+          cd ios/App
+          pod install
+      - name: Build iOS
+        script: |
+          cd client/ios/App
+          xcodebuild -workspace "$XCODE_WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath "$HOME/Library/Developer/Xcode/Archives/App.xcarchive" \
+            clean archive
+      - name: Export IPA
+        script: |
+          xcodebuild -exportArchive \
+            -archivePath "$HOME/Library/Developer/Xcode/Archives/App.xcarchive" \
+            -exportOptionsPlist client/ios/App/exportOptions.plist \
+            -exportPath build
+    artifacts:
+      - build/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Testers
