@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Cardly</string>
+    <string name="title_activity_main">Cardly</string>
+    <string name="package_name">com.cardly.app</string>
+    <string name="custom_url_scheme">com.cardly.app</string>
+</resources>

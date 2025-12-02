@@ -1,0 +1,18 @@
+{
+  "appId": "com.love.cardly.app",
+  "appName": "Cardly",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#fa9a00",
+      "showSpinner": false
+    },
+    "CapacitorHttp": {
+      "enabled": false
+    }
+  }
+}
